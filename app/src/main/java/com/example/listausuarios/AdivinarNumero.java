@@ -22,6 +22,7 @@ public class AdivinarNumero extends AppCompatActivity {
 
     int contador = 0;
 
+    ArrayList<Usuarios> usuarios = new ArrayList<Usuarios>();
     final File f = new File("..\\ListaUsuarios\\app\\src\\usuariosDatos.txt");
 
     @Override
@@ -29,10 +30,10 @@ public class AdivinarNumero extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adivinar_numero);
 
-        // Recoger los datos de otra pantalla:
-        final String nombre = getIntent().getExtras().getString("nombre");
-        final String apellido = getIntent().getExtras().getString("apellido");
-        final String correo = getIntent().getExtras().getString("correo");
+        // Recoger los datos de otra pantalla (// INSERVIBLE //):
+        // final String nombre = getIntent().getExtras().getString("nombre");
+        // final String apellido = getIntent().getExtras().getString("apellido");
+        // final String correo = getIntent().getExtras().getString("correo");
 
         // Parametro para generar numero aleatorio
         final int randomNum = new Random().nextInt(100)+1;
@@ -66,8 +67,12 @@ public class AdivinarNumero extends AppCompatActivity {
                     // El boton se deshabilita en cuanto el usuario acierta el numero:
                     button.setEnabled(false);
 
+                    // Rcoger el nombre del usuario que quiere guardar su puntuacion:
+                    dialog();
+
+                    // IMPORTANTE ACABAR //
                     // Guardar los datos en el Archivo:
-                    escribirArchivo(nombre, apellido, correo, contador);
+                    // escribirArchivo(nombre, contador);
                 }
 
                 // Cada numero que introduzca el usuario se guarda en un texto (primero se recoge el contenido de este y se le añade una linea mas):
@@ -78,23 +83,25 @@ public class AdivinarNumero extends AppCompatActivity {
         });
     }
 
+    // IMPORTANTE ACABAR //
+    public void dialog(){
+
+    }
+
     // Metodo para añadir los datos del usuario en el archivo:
     public void escribirArchivo(String nombre, String apellido, String correo, int contador){
         int contador2;
 
-
         try {
             FileWriter fw = new FileWriter(f, true);
-            fw.write("Nombre: " + nombre + "\n");
-            fw.write("Apellido: " + apellido + "\n");
-            fw.write("Correo: " + correo + "\n");
-            fw.write("Contador: " + contador + "\n");
+            fw.write(" " + nombre + " " + contador);
             fw.close();
         }catch (IOException e){
             System.out.print(e.getMessage());
         }
     }
 
+    // Metodo para copiar y pegar (para tener a mano):
     public void leerArchivo(){
         try{
             String cadena;
@@ -102,6 +109,39 @@ public class AdivinarNumero extends AppCompatActivity {
             BufferedReader b = new BufferedReader(fr);
             while((cadena = b.readLine())!=null) {
                 System.out.println(cadena);
+            }
+            b.close();
+        }catch (IOException e){
+            System.out.print(e.getMessage());
+        }
+    }
+
+    // Metodo para guardar los datos en el ArrayList:
+    public void guardarArray(){
+        // Leo el archivo:
+        try{
+            String cadena;
+            FileReader fr = new FileReader(f);
+            BufferedReader b = new BufferedReader(fr);
+            // Leo el archivo y creo una variable para cada dato:
+            while((cadena = b.readLine())!=null) {
+                // Hago un split para que cada vez que haya un espacio (" ") recoja los datos:
+                String[] datos = cadena.split(" ");
+                String nombre = null;
+                int contador = 0;
+                // Guardo cada dato en una variable y los guardo en un ArrayList despues de hacer un objeto de Usuarios:
+                // Primera vuelta: La posicion de "i" recoge el dato de nombre, se le suma 1 a "i" para recoger luego el contador.
+                // Segunda vuelta: La posicion de "i" es la del contador, el FOR, automaticamente, le suma 1 a la posicion de "i"
+                //                 para recoger de nuevo otro nombre y luego se le suma 1 a "i" para el contador.
+                // ...
+                for (int i = 0; i < datos.length; i++) {
+                    nombre = datos[i];
+                    contador = Integer.parseInt(datos[i + 1]);
+                }
+
+                // Creo un objeto de Usuarios y lo añado al ArrayList:
+                Usuarios u = new Usuarios(nombre, contador);
+                usuarios.add(u);
             }
             b.close();
         }catch (IOException e){

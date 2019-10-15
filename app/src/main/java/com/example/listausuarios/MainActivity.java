@@ -18,6 +18,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    //////////////////////////// NO UTILIZAR ESTA CLASE ////////////////////////////
+
     ArrayList<Usuarios> usuarios = new ArrayList<Usuarios>();
     final File f = new File("..\\ListaUsuarios\\app\\src\\usuariosDatos.txt");
 
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Usuarios u = new Usuarios("David", "Uson", "xldaviduson@gmail.com", 5);
+        Usuarios u = new Usuarios("David", 5);
         usuarios.add(u);
 
         final EditText etNombre = findViewById(R.id.editTextNombre);
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         int contadorUsuario = 0;
         for (Usuarios usuario: usuarios){
             contadorUsuario++;
-            String datos = "USUARIO " + contadorUsuario + "\n" + usuario.getNombre() + " " + usuario.getApellido() + ": " + usuario.getContador() + "\n" + usuario.getCorreo() + "\n";
+            String datos = "USUARIO " + contadorUsuario + "\n" + usuario.getNombre() + " " + usuario.getContador() + "\n";
             etLista.setText(etLista.getText() + datos);
         }
 
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             String cadena;
             FileReader fr = new FileReader(f);
             BufferedReader b = new BufferedReader(fr);
+            // Leo el archivo y creo una variable para cada dato:
             while((cadena = b.readLine())!=null) {
                 String[] datos = cadena.split(": ");
                 String nombre = null;
@@ -89,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     String contadorStr = datos[i+3];
                     contador = Integer.parseInt(contadorStr);
                 }
-                Usuarios u = new Usuarios(nombre, apellido, correo, contador);
+                Usuarios u = new Usuarios(nombre, contador);
                 usuarios.add(u);
             }
             b.close();
