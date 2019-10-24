@@ -26,8 +26,8 @@ public class Ranking extends AppCompatActivity {
         });
     }
 
-    public void cambiarPantalla(String nombre, String apellido, String correo){
-        Intent intent = new Intent (this, AdivinarNumero.class);
+    public void cambiarPantalla(String nombre, String apellido, String correo) {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 }
