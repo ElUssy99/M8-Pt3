@@ -16,7 +16,9 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.194" />
+        app:layout_constraintVertical_bias="0.194"
+        android:background="@color/colorAccent"
+        android:textColor="@android:color/white"/>
 
     <EditText
         android:id="@+id/txtNumero"
@@ -50,7 +52,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonGuardar"
+        android:id="@+id/buttonGuardarDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="GUARDAR"
@@ -59,7 +61,9 @@
         app:layout_constraintHorizontal_bias="0.164"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.307" />
+        app:layout_constraintVertical_bias="0.307"
+        android:background="@color/colorAccent"
+        android:textColor="@android:color/white"/>
 
     <Button
         android:id="@+id/buttonRanking"
@@ -71,6 +75,8 @@
         app:layout_constraintHorizontal_bias="0.845"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.306" />
+        app:layout_constraintVertical_bias="0.306"
+        android:background="@color/colorAccent"
+        android:textColor="@android:color/white"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

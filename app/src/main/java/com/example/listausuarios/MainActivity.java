@@ -1,13 +1,10 @@
 package com.example.listausuarios;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,10 +16,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,16 +33,19 @@ public class MainActivity extends AppCompatActivity {
     int contador = 0;
     String login;
 
-    ArrayList<Usuarios> usuarios = new ArrayList<Usuarios>();
-    final File f = new File("..\\ListaUsuarios\\app\\src\\usuariosDatos.txt");
+    public static ArrayList<Usuarios> usuarios = new ArrayList<Usuarios>();
+    final String f = "..\\ListaUsuarios\\app\\src\\usuariosDatos.dat";
+
+    // Parametro para generar numero aleatorio
+    int randomNum = new Random().nextInt(100)+1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adivinar_numero);;
 
-        // Parametro para generar numero aleatorio
-        final int randomNum = new Random().nextInt(100)+1;
+        cargarArray();
+
         String num = String.valueOf(randomNum);
         Log.i("randomNum", num);
 
@@ -50,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Inicializo el boton con una funcion al pulsarlo:
         final Button button = findViewById(R.id.button);
-        final Button buttonGuardar = findViewById(R.id.buttonGuardar);
+        final Button buttonGuardar = findViewById(R.id.buttonGuardarDialog);
         buttonGuardar.setEnabled(false);
         final Button buttonRanking = findViewById(R.id.buttonRanking);
 
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 int numeroRecogido = Integer.valueOf(StrNumeroRecogido);
 
                 // Comparo si el numero introducido por el usuario es el mismo que el numero que se ha generado aleatorio:
-                if (numeroRecogido == 41) {
+                if (numeroRecogido == randomNum) {
                     // Se muestra un mensaje conforme has hacertado el numero:
                     Context context = getApplicationContext();
                     CharSequence text = "HAS ACERTADO";
@@ -81,121 +87,76 @@ public class MainActivity extends AppCompatActivity {
                 // Cada numero que introduzca el usuario se guarda en un texto (primero se recoge el contenido de este y se le añade una linea mas):
                 txtView.setText(txtView.getText() + "Has utilizado el numero: " + StrNumeroRecogido + "\n");
 
-                numero.setText("");
+
             }
         });
 
         buttonGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Rcoger el nombre del usuario que quiere guardar su puntuacion:
-                // dialog();
+                final Dialog dialog = new Dialog(MainActivity.this);
+                dialog.setContentView(R.layout.dialog_class);
+                dialog.setTitle("Introduce login");
 
-                final AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.dialog_class, null);
-                final EditText mLogin = (EditText) mView.findViewById(R.id.editTextLogin);
-                Button mButton = (Button) mView.findViewById(R.id.buttonGuardar);
-
+                final Button mButton = (Button) findViewById(R.id.buttonGuardarDialog);
                 mButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view){
-                        if (!mLogin.getText().toString().isEmpty()) {
+                        EditText mLogin = (EditText) findViewById(R.id.editTextLoginDialog);
+
+                        if (!mLogin.getText().toString().isEmpty() && !mLogin.equals("")) {
                             login = mLogin.getText().toString();
+                            dialog.dismiss();
+                            usuarios.add(new Usuarios(login, contador));
+                            contador = 0;
+                            randomNum = new Random().nextInt(100) + 1;
+                            guardarArchivo();
+
+                            Intent intent = new Intent(MainActivity.this, Ranking.class);
+                            startActivity(intent);
+                        } else {
+                                Toast toast = Toast.makeText(getApplicationContext(), "Escribe un login", Toast.LENGTH_LONG);
+                                toast.show();
                         }
                     }
                 });
-                mBuilder.show();
-
-                // Guardar los datos en el Archivo:
-                if (login != null && !login.isEmpty()) {
-                    escribirArchivo(login, contador);
-                }
-
-                // Enviar los datos a la pantalla de Ranking y mostralos por el ListView:
-
+                dialog.show();
             }
         });
 
         buttonRanking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ambiarRanking();
-                Intent intent = new Intent(v.getContext(), Ranking.class);
-                ListView lista = findViewById(R.id.lwPersonas);
-                Button boton = findViewById(R.id.btnLista);
-                startActivityForResult(intent, 0);
+                Intent intent = new Intent(MainActivity.this, Ranking.class);
+                startActivity(intent);
             }
         });
     }
 
-    // IMPORTANTE ACABAR //
-    public void dialog(){
-
+    public void guardarArchivo(){
+        try{
+            ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(f));
+            salida.writeObject(usuarios);
+            salida.flush();
+            salida.close();
+        } catch (IOException e) {
+            Toast toast = Toast.makeText(getApplicationContext(), "ERROR: No se han guardado los datos en el archivo.", Toast.LENGTH_LONG);
+            toast.show();
+        }
     }
 
-    public void cambiarRanking(){
-        Intent intent = new Intent(this, Ranking.class);
-        ListView lista = findViewById(R.id.lwPersonas);
-        Button boton = findViewById(R.id.btnLista);
-        startActivityForResult(intent, 0);
-    }
-
-    // Metodo para añadir los datos del usuario en el archivo:
-    public void escribirArchivo(String login, int contador){
+    public void cargarArray(){
         try {
-            FileWriter fw = new FileWriter(f, true);
-            fw.write(" " + login + " " + contador);
-            fw.close();
-        }catch (IOException e){
-            System.out.print(e.getMessage());
+            ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(f));
+            usuarios = (ArrayList<Usuarios>)entrada.readObject();
+            entrada.close();
+        } catch (ClassNotFoundException cnfe) {
+            Toast toast = Toast.makeText(getApplicationContext(), "ERROR: No se pudo acceder a la clase.", Toast.LENGTH_LONG);
+            toast.show();
+        } catch (IOException e) {
+            Toast toast = Toast.makeText(getApplicationContext(), "ERROR: No se han cargado los datos en el archivo.", Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 
-    // Metodo para copiar y pegar (para tener a mano):
-    public void leerArchivo(){
-        try{
-            String cadena;
-            FileReader fr = new FileReader(f);
-            BufferedReader b = new BufferedReader(fr);
-            while((cadena = b.readLine())!=null) {
-                System.out.println(cadena);
-            }
-            b.close();
-        }catch (IOException e){
-            System.out.print(e.getMessage());
-        }
-    }
-
-    // Metodo para guardar los datos en el ArrayList:
-    public void guardarArray(){
-        // Leo el archivo:
-        try{
-            String cadena;
-            FileReader fr = new FileReader(f);
-            BufferedReader b = new BufferedReader(fr);
-            // Leo el archivo y creo una variable para cada dato:
-            while((cadena = b.readLine())!=null) {
-                // Hago un split para que cada vez que haya un espacio (" ") recoja los datos:
-                String[] datos = cadena.split(" ");
-                String nombre = null;
-                int contador = 0;
-                // Guardo cada dato en una variable y los guardo en un ArrayList despues de hacer un objeto de Usuarios:
-                // Primera vuelta: La posicion de "i" recoge el dato de nombre, se le suma 1 a "i" para recoger luego el contador.
-                // Segunda vuelta: La posicion de "i" es la del contador, el FOR, automaticamente, le suma 1 a la posicion de "i"
-                //                 para recoger de nuevo otro nombre y luego se le suma 1 a "i" para el contador.
-                // ...
-                for (int i = 0; i < datos.length; i++) {
-                    nombre = datos[i];
-                    contador = Integer.parseInt(datos[i + 1]);
-                }
-
-                // Creo un objeto de Usuarios y lo añado al ArrayList:
-                Usuarios u = new Usuarios(nombre, contador);
-                usuarios.add(u);
-            }
-            b.close();
-        }catch (IOException e){
-            System.out.print(e.getMessage());
-        }
-    }
 }
