@@ -16,6 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Ranking"
+            android:label="@string/title_ranking" />
+        <activity
+            android:name=".Dialog"
+            android:label="@string/title_dialog_class" />
     </application>
 
 </manifest>

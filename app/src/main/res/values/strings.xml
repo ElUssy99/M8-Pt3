@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ListaUsuarios</string>
+    <string name="title_ranking" />
+    <string name="title_dialog_class" />
 </resources>

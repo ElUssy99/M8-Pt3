@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.adivinar_numero);;
+        setContentView(R.layout.adivinar_numero);
 
         cargarArray();
 
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         // Inicializo el boton con una funcion al pulsarlo:
         final Button button = findViewById(R.id.button);
         final Button buttonGuardar = findViewById(R.id.buttonGuardarDialog);
-        buttonGuardar.setEnabled(false);
+        //buttonGuardar.setEnabled(false);
         final Button buttonRanking = findViewById(R.id.buttonRanking);
 
         button.setOnClickListener(new View.OnClickListener(){
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 mButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view){
-                        EditText mLogin = (EditText) findViewById(R.id.editTextLoginDialog);
+                        /*EditText mLogin = (EditText) findViewById(R.id.editTextLoginDialog);
 
                         if (!mLogin.getText().toString().isEmpty() && !mLogin.equals("")) {
                             login = mLogin.getText().toString();
@@ -112,12 +112,13 @@ public class MainActivity extends AppCompatActivity {
                             randomNum = new Random().nextInt(100) + 1;
                             guardarArchivo();
 
-                            Intent intent = new Intent(MainActivity.this, Ranking.class);
-                            startActivity(intent);
+
                         } else {
                                 Toast toast = Toast.makeText(getApplicationContext(), "Escribe un login", Toast.LENGTH_LONG);
                                 toast.show();
-                        }
+                        }*/
+                        Intent intent = new Intent(MainActivity.this, Dialog.class);
+                        startActivity(intent);
                     }
                 });
                 dialog.show();

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,8 +23,12 @@ public class Ranking extends AppCompatActivity {
 
         usuariosRanking = MainActivity.usuarios;
 
+        TextView tv = findViewById(R.id.titulo);
+        tv.setVisibility(View.VISIBLE);
         ListView lista = findViewById(R.id.lwPersonas);
+        lista.setVisibility(View.VISIBLE);
         Button boton = findViewById(R.id.btnLista);
+        boton.setVisibility(View.VISIBLE);
 
         ArrayAdapter<Usuarios> adapterUsuarios = new ArrayAdapter<>(this, android.R.layout.list_content, usuariosRanking);
         lista.setAdapter(adapterUsuarios);

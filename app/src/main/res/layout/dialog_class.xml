@@ -26,11 +26,21 @@
         android:inputType="textPersonName" />
 
     <Button
+        android:id="@+id/buttonFoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorAccent"
+        android:text="FOTO"
+        android:textColor="@android:color/white" />
+
+    <Button
         android:id="@+id/buttonGuardarDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="@color/colorAccent"
-        android:textColor="@android:color/white"
-        android:text="Guardar" />
+        android:text="Guardar"
+        android:textColor="@android:color/white" />
+
 </LinearLayout>
