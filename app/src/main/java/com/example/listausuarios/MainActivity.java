@@ -3,35 +3,28 @@ package com.example.listausuarios;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     int contador = 0;
-    String login;
 
     public static ArrayList<Usuarios> usuarios = new ArrayList<Usuarios>();
     final String f = "..\\ListaUsuarios\\app\\src\\usuariosDatos.dat";
@@ -44,7 +37,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adivinar_numero);
 
-        cargarArray();
+        if (usuarios.size()==0){
+            loadInfo();
+        }
+
+        //cargarArray();
 
         String num = String.valueOf(randomNum);
         Log.i("randomNum", num);
@@ -102,21 +99,6 @@ public class MainActivity extends AppCompatActivity {
                 mButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view){
-                        /*EditText mLogin = (EditText) findViewById(R.id.editTextLoginDialog);
-
-                        if (!mLogin.getText().toString().isEmpty() && !mLogin.equals("")) {
-                            login = mLogin.getText().toString();
-                            dialog.dismiss();
-                            usuarios.add(new Usuarios(login, contador));
-                            contador = 0;
-                            randomNum = new Random().nextInt(100) + 1;
-                            guardarArchivo();
-
-
-                        } else {
-                                Toast toast = Toast.makeText(getApplicationContext(), "Escribe un login", Toast.LENGTH_LONG);
-                                toast.show();
-                        }*/
                         Intent intent = new Intent(MainActivity.this, Dialog.class);
                         startActivity(intent);
                     }
@@ -134,15 +116,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void guardarArchivo(){
+    private void loadInfo(){
         try{
-            ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(f));
-            salida.writeObject(usuarios);
-            salida.flush();
-            salida.close();
-        } catch (IOException e) {
-            Toast toast = Toast.makeText(getApplicationContext(), "ERROR: No se han guardado los datos en el archivo.", Toast.LENGTH_LONG);
-            toast.show();
+            BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput("persistence.txt")));
+            String linia;
+            while((linia = br.readLine())!=null){
+                usuarios.add(new Usuarios(linia.split(";")[1], Integer.parseInt(linia.split(";")[0]), Uri.parse(linia.split(";")[2])));
+            }
+            br.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -158,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(getApplicationContext(), "ERROR: No se han cargado los datos en el archivo.", Toast.LENGTH_LONG);
             toast.show();
         }
+    }
+
+    public ArrayList<Usuarios> pasarUsuarios(){
+        return usuarios;
+    }
+    public int pasarContador() {
+        return contador;
     }
 
 }
