@@ -1,7 +1,13 @@
 package com.example.endevina;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -12,50 +18,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class Ranking extends Activity{
-    private List<Jugador> jugadors;
+
+    private ArrayAdapter<Jugador> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record);
-        try {
-            mostrarDatos();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-
-    private void mostrarDatos() throws IOException {
-        jugadors = new ArrayList<>();
-        leerFichero();
-        final TextView tablaRecord = findViewById(R.id.record);
-        tablaRecord.setText("");
-        if(jugadors.size()>0){
-            Collections.sort(jugadors);
-            for (Jugador jug:
-                    jugadors) {
-                tablaRecord.setText(tablaRecord.getText() + jug.toString());
+        adapter = new ArrayAdapter<Jugador>(this, R.layout.record, MainActivity.jugadores){
+            @Override
+            public View getView(int pos, View convertView, ViewGroup container)
+            {
+                if( convertView==null ) {
+                    convertView = getLayoutInflater().inflate(R.layout.player, container, false);
+                }
+                ((TextView) convertView.findViewById(R.id.name)).setText(getItem(pos).getName());
+                ((TextView) convertView.findViewById(R.id.trie)).setText(Integer.toString(getItem(pos).getIntentos()));
+                ((ImageView) convertView.findViewById(R.id.imgView)).setImageURI(getItem(pos).getPhotoPath());
+                return convertView;
             }
-        }else{
-            tablaRecord.setText(tablaRecord.getText() + "No hay datos registrados");
-        }
+        };
 
-    }
-
-    private void leerFichero() throws IOException {
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput("almacenarJugadors.txt")));
-            String datos;
-            while((datos = br.readLine())!=null){
-                String[] arrayDatos = datos.split(",");
-                jugadors.add(new Jugador(arrayDatos[0],Integer.parseInt(arrayDatos[1])));
-            }
-            br.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        ListView lv = (ListView) findViewById(R.id.listView);
+        lv.setAdapter(adapter);
     }
 }

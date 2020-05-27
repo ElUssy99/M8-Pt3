@@ -1,12 +1,16 @@
 package com.example.endevina;
 
+import android.net.Uri;
+
 public class Jugador implements Comparable<Jugador> {
     private String name;
     private int intentos;
+    private Uri photoPath;
 
-    public Jugador(String name, int intentos) {
+    public Jugador(String name, int intentos, Uri photoPath) {
         this.name = name;
         this.intentos = intentos;
+        this.photoPath =  photoPath;
     }
 
     public String getName() {
@@ -16,6 +20,8 @@ public class Jugador implements Comparable<Jugador> {
     public int getIntentos() {
         return intentos;
     }
+
+    public Uri getPhotoPath() { return photoPath; }
 
     @Override
     public String toString() {

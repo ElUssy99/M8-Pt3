@@ -13,24 +13,18 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.978"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.093" />
+        app:layout_constraintVertical_bias="0.022" />
 
-    <TextView
-        android:id="@+id/record"
-        android:layout_width="259dp"
-        android:layout_height="122dp"
-        android:layout_marginStart="95dp"
-        android:layout_marginTop="182dp"
-        android:layout_marginEnd="121dp"
-        android:layout_marginBottom="207dp"
-        android:text="TextView"
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="397dp"
+        android:layout_height="558dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 </android.support.constraint.ConstraintLayout>
